@@ -25,20 +25,21 @@ export default function TasksPage() {
       const { data: sessionData } = await supabase.auth.getSession();
       const token = sessionData?.session?.access_token;
       if (!token) {
-        // not logged in -> redirect to /login
         window.location.assign('/login');
         return;
       }
 
       try {
         const res = await fetch('/api/tasks', {
-          headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` },
         });
         if (!res.ok) throw new Error(await res.text());
-        const json = await res.json();
+        const json: Task[] = await res.json();
         setTasks(json);
-      } catch (err: any) {
-        setError(err.message || 'Failed to load tasks');
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to load tasks';
+        setError(errorMessage);
       } finally {
         setLoading(false);
       }
@@ -51,7 +52,8 @@ export default function TasksPage() {
     e.preventDefault();
     setError(null);
 
-    if (!title.trim() || !description.trim()) return setError('Title and description are required');
+    if (!title.trim() || !description.trim())
+      return setError('Title and description are required');
 
     const { data: sessionData } = await supabase.auth.getSession();
     const token = sessionData?.session?.access_token;
@@ -62,18 +64,23 @@ export default function TasksPage() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ title: title.trim(), description: description.trim() })
+        body: JSON.stringify({
+          title: title.trim(),
+          description: description.trim(),
+        }),
       });
 
       if (!res.ok) throw new Error(await res.text());
-      const created = await res.json();
-      setTasks((t) => [created, ...t]);
+      const created: Task = await res.json();
+      setTasks((prev) => [created, ...prev]);
       setTitle('');
       setDescription('');
-    } catch (err: any) {
-      setError(err.message || 'Failed to create task');
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to create task';
+      setError(errorMessage);
     }
   };
 
@@ -86,12 +93,14 @@ export default function TasksPage() {
     try {
       const res = await fetch(`/api/tasks/${id}`, {
         method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
+        headers: { Authorization: `Bearer ${token}` },
       });
       if (!res.ok) throw new Error(await res.text());
-      setTasks((t) => t.filter((task) => task.id !== id));
-    } catch (err: any) {
-      setError(err.message || 'Failed to delete task');
+      setTasks((prev) => prev.filter((task) => task.id !== id));
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to delete task';
+      setError(errorMessage);
     }
   };
 
@@ -104,7 +113,9 @@ export default function TasksPage() {
     <div>
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold">Your Tasks</h1>
-        <button onClick={signOut} className="text-sm px-3 py-1 border rounded">Sign out</button>
+        <button onClick={signOut} className="text-sm px-3 py-1 border rounded">
+          Sign out
+        </button>
       </div>
 
       <section className="mb-6 bg-white p-4 rounded shadow">
@@ -124,7 +135,9 @@ export default function TasksPage() {
             className="w-full p-2 border rounded"
           />
           <div>
-            <button className="px-4 py-2 rounded bg-indigo-600 text-white">Add Task</button>
+            <button className="px-4 py-2 rounded bg-indigo-600 text-white">
+              Add Task
+            </button>
           </div>
         </form>
       </section>
@@ -135,17 +148,26 @@ export default function TasksPage() {
         <div>Loading...</div>
       ) : (
         <ul className="space-y-3">
-          {tasks.length === 0 && <div className="text-gray-600">No tasks yet — add one above.</div>}
+          {tasks.length === 0 && (
+            <div className="text-gray-600">No tasks yet — add one above.</div>
+          )}
           {tasks.map((t) => (
             <li key={t.id} className="bg-white p-4 rounded shadow">
               <div className="flex justify-between items-start">
                 <div>
                   <h3 className="font-semibold">{t.title}</h3>
                   <p className="text-sm text-gray-700">{t.description}</p>
-                  <p className="text-xs text-gray-400 mt-2">{new Date(t.createdAt).toLocaleString()}</p>
+                  <p className="text-xs text-gray-400 mt-2">
+                    {new Date(t.createdAt).toLocaleString()}
+                  </p>
                 </div>
                 <div>
-                  <button onClick={() => deleteTask(t.id)} className="text-sm px-3 py-1 border rounded">Delete</button>
+                  <button
+                    onClick={() => deleteTask(t.id)}
+                    className="text-sm px-3 py-1 border rounded"
+                  >
+                    Delete
+                  </button>
                 </div>
               </div>
             </li>

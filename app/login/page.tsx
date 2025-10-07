@@ -1,9 +1,9 @@
-
 'use client';
 
 import { useState } from 'react';
 import { supabase } from '../../lib/supabaseClient';
 import { useRouter } from 'next/navigation';
+import type { AuthError } from '@supabase/supabase-js';
 
 export default function LoginPage() {
   const [isSignUp, setIsSignUp] = useState(false);
@@ -13,35 +13,45 @@ export default function LoginPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoading(true);
     setError(null);
 
     try {
       if (isSignUp) {
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { error } = await supabase.auth.signUp({ email, password });
         if (error) throw error;
-        // after sign up, Supabase will send confirm email depending on your settings.
-        // We redirect to /tasks and Supabase will create a session on successful sign-in.
         router.push('/tasks');
       } else {
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { error } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
         if (error) throw error;
         router.push('/tasks');
       }
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
+    } catch (err) {
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : (err as AuthError)?.message || 'An unknown error occurred';
+      setError(errorMessage);
     } finally {
       setLoading(false);
-      console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-      console.log("Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0,10) + "...");
+      console.log('Supabase URL:', process.env.NEXT_PUBLIC_SUPABASE_URL);
+      console.log(
+        'Supabase Key:',
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0, 10) + '...'
+      );
     }
   };
 
   return (
     <div className="max-w-md mx-auto mt-20 bg-white p-6 rounded shadow">
-      <h2 className="text-2xl font-semibold mb-4">{isSignUp ? 'Create account' : 'Sign in'}</h2>
+      <h2 className="text-2xl font-semibold mb-4">
+        {isSignUp ? 'Create account' : 'Sign in'}
+      </h2>
 
       {error && <div className="text-red-600 mb-4">{error}</div>}
 
@@ -73,11 +83,16 @@ export default function LoginPage() {
       </form>
 
       <div className="mt-4 text-sm text-center">
-        <button className="underline" onClick={() => setIsSignUp((s) => !s)}>
-          {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Create one"}
+        <button
+          className="underline"
+          onClick={() => setIsSignUp((s) => !s)}
+        >
+          {isSignUp
+            ? 'Already have an account? Sign in'
+            : "Don't have an account? Create one"}
         </button>
       </div>
-      
     </div>
   );
 }
+
