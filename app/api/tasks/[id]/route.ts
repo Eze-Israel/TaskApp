@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import prisma from '../../../../lib/prisma';
+import prisma from '@/lib/prisma';
 import { supabaseAdmin } from '@/lib/superbaseAdmin';
 
 function getTokenFromHeader(req: Request) {
@@ -9,7 +9,12 @@ function getTokenFromHeader(req: Request) {
   return null;
 }
 
-export async function DELETE(req: Request, { params }: { params: { id: string } }) {
+export async function DELETE(
+  req: Request,
+  context: { params: Promise<{ id: string }> } 
+) {
+  const { id } = await context.params; 
+
   const token = getTokenFromHeader(req);
   if (!token) return new Response('Unauthorized', { status: 401 });
 
@@ -17,12 +22,11 @@ export async function DELETE(req: Request, { params }: { params: { id: string } 
   const user = data?.user;
   if (error || !user) return new Response('Unauthorized', { status: 401 });
 
-  const { id } = params;
   const task = await prisma.task.findUnique({ where: { id } });
-  if (!task) return new Response('Not found', { status: 404 });
-  if (task.userId !== user.id) return new Response('Forbidden', { status: 403 });
+  if (!task || task.userId !== user.id)
+    return new Response('Not found or not authorized', { status: 404 });
 
   await prisma.task.delete({ where: { id } });
 
-  return new Response(null, { status: 204 });
+  return NextResponse.json({ message: 'Task deleted successfully' }, { status: 200 });
 }
