@@ -34,6 +34,8 @@ export default function LoginPage() {
       setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
+      console.log("Supabase URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
+      console.log("Supabase Key:", process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.slice(0,10) + "...");
     }
   };
 
@@ -48,7 +50,7 @@ export default function LoginPage() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
-          placeholder="you@example.com"
+          placeholder="you@gmail.com"
           required
           className="w-full p-2 border rounded"
         />
@@ -56,7 +58,7 @@ export default function LoginPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           type="password"
-          placeholder="password"
+          placeholder="password***"
           required
           className="w-full p-2 border rounded"
         />
@@ -75,6 +77,7 @@ export default function LoginPage() {
           {isSignUp ? 'Already have an account? Sign in' : "Don't have an account? Create one"}
         </button>
       </div>
+      
     </div>
   );
 }
