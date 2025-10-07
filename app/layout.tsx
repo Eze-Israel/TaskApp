@@ -1,18 +1,19 @@
+import "./globals.css";
+import type { Metadata } from "next";
 
-import './globals.css';
-import React from 'react';
-
-export const metadata = {
-  title: 'Task Manager',
-  description: 'Next.js App Router + Supabase Auth + Prisma',
+export const metadata: Metadata = {
+  title: "Task Manager",
+  description: "Simple Task Manager built with Next.js, Supabase, and Prisma",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-gray-50 text-gray-900">
-        <main className="max-w-3xl mx-auto p-6">{children}</main>
-      </body>
+      <body className="bg-gray-50 text-gray-900">{children}</body>
     </html>
   );
 }
