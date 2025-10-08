@@ -153,7 +153,7 @@ export default function TasksPage() {
   };
 
   return (
-    <div className="max-w-xl mx-auto p-4 sm:p-6 bg-gray-50 min-h-screen text-gray-800 border-4 border-gray-500">
+    <div className="max-w-xl mx-auto p-4 sm:p-6 bg-gray-50 min-h-screen text-gray-800">
       <div className="flex flex-col sm:flex-row items-center justify-between mb-6">
         <h1 className="text-2xl font-bold text-purple-700 mb-3 sm:mb-0">
           Your Tasks
