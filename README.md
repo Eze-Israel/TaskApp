@@ -1,6 +1,6 @@
 # Task Manager
 
-Minimal task manager built with Next.js (App Router), TypeScript, Supabase Auth + Postgres, and Prisma.
+A task manager built with Next.js (App Router), TypeScript, Supabase Auth + Postgres, and Prisma.
 
 
 // Project structure
@@ -43,11 +43,11 @@ simple-task-manager/
 1. **Clone the repo**
 
 git clone <repo-url>
-cd simple-task-manager
+cd task-manager
 
 2. **Create a Supabase project**
 
-* Go to [https://app.supabase.com](https://app.supabase.com) and create a new project.
+* Create a new project.
 * After project creation:
 
   * Go to **Settings → API** and copy the `Project URL` (use as `NEXT_PUBLIC_SUPABASE_URL` and `SUPABASE_URL`) and `anon` key (`NEXT_PUBLIC_SUPABASE_ANON_KEY`).
@@ -80,13 +80,19 @@ This will create the `Task` table in your Supabase Postgres DB.
 npm run dev
 # open http://localhost:3000
 
-8. **Usage**
+8. **How to Use**
 
 * Visit `/login` to create an account or sign in.
 * Visit `/tasks` to manage tasks.
+* User cannot create or manage tasks without signing up.
 
 
 ## Deployment notes (Vercel)
 
 * On Vercel, add the same env vars to your project settings: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_URL`, and `DATABASE_URL`.
-* Ensure `DATABASE_URL` is present so Prisma (on build) can run necessary generation. 
+* Ensure `DATABASE_URL` is present so Prisma (on build) can run necessary generation.
+
+
+## That is all and thank you sir/Maam for going through my project.
+
+## Hoping to hear from you soon...
