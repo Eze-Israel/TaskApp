@@ -10,14 +10,15 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "postinstall": "prisma generate"
-
   },
   "dependencies": {
     "@prisma/client": "5.0.0",
     "@supabase/supabase-js": "2.27.0",
+    "framer-motion": "^12.23.22",
     "next": "15.5.4",
     "react": "19.1.0",
-    "react-dom": "19.1.0"
+    "react-dom": "19.1.0",
+    "sweetalert2": "^11.25.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
